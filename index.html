@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css"
+      integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <script type="text/JavaScript" src="/js/jquery-3.7.1.min.js"></script>
+    <title>Responsive Navigation Menu Bar</title>
+
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  </head>
+
+  <body>
+    <div id="preloader">
+      <div class="wloader"></div>
+    </div>
+
+    <nav>
+      <div class="nav-bar">
+        <div class="nav-flex">
+          <i class="fa-solid fa-bars sidebarOpen"></i>
+          <span class="logo navLogo"
+            ><i class="fa-solid fa-utensils"></i><a href="#">ចង់ញ៉ាំ</a></span
+          >
+          <div class="menu">
+            <div class="logo-toggle">
+              <span class="logo"
+                ><i class="fa-solid fa-utensils"></i
+                ><a href="#">ចង់ញ៉ាំ</a></span
+              >
+              <i class="fa-solid fa-xmark sidebarClose"></i>
+            </div>
+            <ul class="nav-links">
+              <li><a href="#" id="homelink" class="active">Home</a></li>
+              <li><a href="#" id="menulink">Menu</a></li>
+              <li><a href="#" id="aboutlink">About</a></li>
+              <li><a href="#" id="teamlink">Team</a></li>
+              <li><a href="#" id="categorieslink">Gallery</a></li>
+              <li><a href="#" id="bloglink">Blog</a></li>
+              <li><a href="#" id="contactlink">Contact</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="nav-flex">
+          <button class="frutiger-button" id="reservationlink">
+            <div class="inner-nav">
+              <div class="top-white"></div>
+              <i class="fa-regular fa-calendar-days"></i>
+              <span class="frutiger-text-nav">Reservation</span>
+            </div>
+          </button>
+
+          <div class="darkLight-searchBox">
+            <button class="frutiger-button">
+              <div class="inner-nav">
+                <div class="dark-light">
+                  <i class="fa-solid fa-moon moon"></i>
+                  <i class="fa-solid fa-sun sun "></i>
+                </div>
+              </div>
+            </button>
+
+            <!-- <button class="frutiger-button">
+              <div class="inner">
+                <div class="dark-light">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+              </div>
+            </button> -->
+            <button class="frutiger-button">
+              <div class="inner">
+                <div class="cartBox">
+                  <i
+                    class="fa-solid fa-cart-shopping"
+                    style="font-size: 15px"
+                    id="viewCart"
+                    ><span id="cartCount">0</span></i
+                  >
+                </div>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div id="content">
+      <!-- Page content will be dynamically loaded here -->
+    </div>
+    <div id="cart-popup">
+      <button id="close-cart-popup" class="close-btn">×</button>
+      <h3>Shopping Cart</h3>
+      <ul id="cart-items">
+        <!-- Items will be dynamically added here -->
+        <img src="" alt="" />
+      </ul>
+      <div id="cart-total">
+        <strong>Total: </strong><span id="total-cost">$0</span>
+      </div>
+      <div class="cart-actions">
+        <button id="checkout-btn">Checkout</button>
+        <button id="clear-cart-btn">Clear Cart</button>
+      </div>
+      <div id="checkout-loader" class="hidden">Processing...</div>
+      <div id="checkout-success" class="hidden">Checkout successful!</div>
+    </div>
+    <footer id="footer-container">
+      <!-- Footer content can be dynamically loaded here if needed -->
+    </footer>
+
+    <script>
+      const body = document.querySelector("body"),
+        nav = document.querySelector("nav"),
+        modeToggle = document.querySelector(".dark-light"),
+        moonIcon = document.querySelector(".moon"),
+        sunIcon = document.querySelector(".sun"),
+        sidebarOpen = document.querySelector(".sidebarOpen"),
+        sidebarClose = document.querySelector(".sidebarClose");
+
+      // Set mode based on localStorage
+      let getMode = localStorage.getItem("mode");
+      if (getMode && getMode === "dark-mode") {
+        body.classList.add("dark");
+        modeToggle.classList.add("active");
+        moonIcon.style.display = "none";
+        sunIcon.style.display = "inline-block";
+      } else {
+        moonIcon.style.display = "inline-block";
+        sunIcon.style.display = "none";
+      }
+
+      // Toggle dark and light mode
+      modeToggle.addEventListener("click", () => {
+        modeToggle.classList.toggle("active");
+        body.classList.toggle("dark");
+
+        if (!body.classList.contains("dark")) {
+          localStorage.setItem("mode", "light-mode");
+          moonIcon.style.display = "inline-block";
+          sunIcon.style.display = "none";
+        } else {
+          localStorage.setItem("mode", "dark-mode");
+          moonIcon.style.display = "none";
+          sunIcon.style.display = "inline-block";
+        }
+      });
+
+      // Toggle sidebar
+      sidebarOpen.addEventListener("click", () => {
+        nav.classList.add("active");
+      });
+
+      sidebarClose.addEventListener("click", () => {
+        nav.classList.remove("active");
+      });
+
+      // Close sidebar on outside click
+      body.addEventListener("click", (e) => {
+        if (
+          !e.target.classList.contains("sidebarOpen") &&
+          !e.target.closest(".menu")
+        ) {
+          nav.classList.remove("active");
+        }
+      });
+
+      // Close sidebar when a navigation link is clicked
+      document.querySelectorAll(".nav-links li a").forEach((link) => {
+        link.addEventListener("click", () => {
+          // Remove active class from all links
+          document.querySelectorAll(".nav-links li a").forEach((el) => {
+            el.classList.remove("active");
+          });
+
+          // Add active class to the clicked link
+          link.classList.add("active");
+
+          // Close the sidebar if it's open
+          nav.classList.remove("active");
+        });
+      });
+
+      // Check if this is the first load in the session
+      const isInitialLoad = !sessionStorage.getItem("hasLoaded");
+
+      window.addEventListener("load", () => {
+        const preloader = document.getElementById("preloader");
+        const content = document.getElementById("content");
+
+        if (isInitialLoad) {
+          // Display loader for 3 seconds on initial load
+          setTimeout(() => {
+            preloader.classList.add("hidden");
+            content.classList.add("visible");
+            sessionStorage.setItem("hasLoaded", "true"); // Set flag after initial load
+          }, 1000);
+        } else {
+          // Skip loader on subsequent loads
+          preloader.style.display = "none";
+          content.classList.add("visible");
+        }
+      });
+    </script>
+    
+    <script src="index.js"></script>
+  </body>
+</html>
