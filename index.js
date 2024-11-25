@@ -80,7 +80,7 @@ $(document).ready(function () {
   });
 
   // Handle "Our Menu" and "Contact Us" buttons within loaded content
-  $(document).on("click", ".home-btn-menu", function (e) {
+  $(document).on("click", "#home-btn-menu", function (e) {
     e.preventDefault(); // Prevent default anchor action
     $("#content").load("/components/menu.html", function () {
       window.scrollTo(0, 0); // Scroll to the top of the page after loading content
@@ -88,7 +88,14 @@ $(document).ready(function () {
       // closeMenu(); // Close the menu
     });
   });
-
+  $(document).on("click", "#home-btn-team", function (e) {
+    e.preventDefault(); // Prevent default anchor action
+    $("#content").load("/components/team.html", function () {
+      window.scrollTo(0, 0); // Scroll to the top of the page after loading content
+    // Call the function to render the menu
+      // closeMenu(); // Close the menu
+    });
+  });
   $(document).on("click", "#home-btn-reservation", function (e) {
     e.preventDefault();
     $("#content").load("/components/reservation.html", function () {
@@ -97,7 +104,7 @@ $(document).ready(function () {
     });
   });
 
-  $(document).on("click", ".home-btn-contact", function (e) {
+  $(document).on("click", "#home-btn-contact", function (e) {
     e.preventDefault();
     $("#content").load("/components/contact.html", function () {
       window.scrollTo(0, 0);
@@ -268,66 +275,217 @@ $(document).ready(function () {
   function renderMenu() {
     const menuData = [
       {
-        name: "Pizza",
-        description:
-          "A delicious cheese and tomato pizza topped with fresh basil.",
-        image: "../assets/images/f1.png",
-        price: "$20",
-        categories: ["food"],
+        name: "Honey BBQ",
+        description:"baked honey BBQ popcorn chicken is the easiest appetizer ",
+        image: "../assets/images/appitizer1.jpg",
+        price: "$4",
+        categories: ["appetizer"],
       },
       {
-        name: "Burger",
+        name: "Butter Chicken ",
+        description: "Crispy garlic butter chicken wings! Baked in the oven ",
+        image: "../assets/images/appitizer3.jpg",
+        price: "$6",
+        categories: ["appetizer"],
+      },
+      {
+        name: "Cheese Bread",
+        description: "Learn How to Cook Cheesy Garlic Bread Recipe For Free ",
+        image: "../assets/images/appitizer2.jpg",
+        price: "$5",
+        categories: ["appetizer"],
+      },
+      {
+        name: "Garlic Butter",
+        description: "Pillsbury Biscuit Garlic Butter Cheese Bombs Ingredients",
+        image: "../assets/images/appitizer4.jpg",
+        price: "$7",
+        categories: ["appetizer"],
+      },
+      {
+        name: "Shrimp Ceviche",
+        description: " refreshing dip that is loaded with shrimp, lime juice,",
+        image: "../assets/images/appitizer5.jpg",
+        price: "$7",
+        categories: ["appetizer"],
+      },
+      {
+        name: "Daiquiri",
         description:
-          "Juicy grilled beef burger with fresh lettuce, tomato, and cheese.",
-        image: "../assets/images/f2.png",
-        price: "$15",
+          "his classic rum cocktail owes its origins to American mining engineer ",
+        image: "../assets/images/drinks1.jpg",
+        price: "$3",
         categories: ["drink"],
       },
       {
-        name: "Pasta",
+        name: "Dark Stormy",
         description:
-          "Creamy Alfredo pasta with garlic, parmesan, and fresh herbs.",
-        image: "../assets/images/f3.png",
-        price: "$18",
+          "Born in Bermuda, this rum drink was a match between the British Royal ",
+        image: "../assets/images/drinks2.jpg",
+        price: "$3",
+        categories: ["drink"],
+      },
+
+      {
+        name: "Mojito",
+        description:
+          "he original was invented in Havana, Cuba, but you can ",
+        image: "../assets/images/drinks3.jpg",
+        price: "$4",
         categories: ["drink"],
       },
       {
-        name: "Fries",
-        description: "Crispy golden fries with a hint of sea salt.",
-        image: "../assets/images/f4.png",
-        price: "$10",
-        categories: ["food"],
+        name: "Planter Punch",
+        description:
+          "Likely originating in Jamaica, this rum drink recipe  ",
+        image: "../assets/images/drinks4.png",
+        price: "$3.5",
+        categories: ["drink"],
       },
       {
-        name: "Pizza",
+        name: "Matcha Latte",
         description:
-          "Pepperoni pizza with a perfect balance of cheese and spice.",
-        image: "../assets/images/f5.png",
-        price: "$20",
+          "the start of summer to when the temps dip in the fall.  ",
+        image: "../assets/images/drinks5.jfif",
+        price: "$2.5",
+        categories: ["drink"],
+      },
+      
+      
+      {
+        name: "Tiramisu",
+        description:
+          "This decadent chocolate tiramisu features cocoa-coffee",
+        image: "../assets/images/dessert.jpg",
+        price: "$40",
         categories: ["dessert"],
       },
       {
-        name: "Pizza",
-        description: "Vegetarian pizza with bell peppers, onions, and olives.",
-        image: "../assets/images/f6.png",
-        price: "$20",
+        name: "Cheesecake",
+        description: "creamy delight of Cheesecake Crescent Rolls Casserole",
+        image: "../assets/images/dessert2.jpg",
+        price: "$39",
         categories: ["dessert"],
       },
       {
-        name: "Pizza",
-        description:
-          "BBQ chicken pizza with tangy barbecue sauce and melted cheese.",
-        image: "../assets/images/f7.png",
-        price: "$20",
-        categories: ["food"],
+        name: "Orange Cake",
+        description: "Savor the flavors of Orange Blossom Cheesecake, a perfect",
+        image: "../assets/images/dessert3.jpg",
+        price: "$60",
+        categories: ["dessert"],
       },
       {
-        name: "Burger",
+        name: "Blueberry Cake",
+        description: "Lemon Blueberry Shortbread Mousse Cake: A Symphony of Flavors ",
+        image: "../assets/images/dessert4.jpg",
+        price: "$30",
+        categories: ["dessert"],
+      },
+      {
+        name: "Green Matcha",
+        description: "You can save them on your pin boards Green Matcha ",
+        image: "../assets/images/dessert5.jpg",
+        price: "$30",
+        categories: ["dessert"],
+      },
+      
+      {
+        name: "Salmon fillets ",
         description:
-          "Spicy chicken burger with lettuce, tomato, and a spicy mayo.",
-        image: "../assets/images/f8.png",
+          " skin-side down, and cook for 4-5 minutes on each side",
+        image: "../assets/images/mainc1.jpg",
         price: "$16",
-        categories: ["food"],
+        categories: ["maincourse"],
+      },
+      {
+        name: "Strip Steak",
+        description:
+          " quality steak right in your own backyard. ",
+        image: "../assets/images/mainc2.jpg",
+        price: "$22",
+        categories: ["maincourse"],
+      },
+      {
+        name: " B-Wellington",
+        description:
+          " is the Best and Easiest single-serve Beef Wellington Recipe Ever",
+        image: "../assets/images/mainc3.jpg",
+        price: "$299",
+        categories: ["maincourse"],
+      },
+      {
+        name: "Steak Plate",
+        description:
+          " A complete guide including where to place knives, forks, spoons,",
+        image: "../assets/images/mainc4.jpg",
+        price: "$88",
+        categories: ["maincourse"],
+      },
+      {
+        name: "Spagetti",
+        description:
+          "Spagetti with tomato sugo, peeled and diced fresh tomatoes and  •",
+        image: "../assets/images/mainc5.jpg",
+        price: "$19",
+        categories: ["maincourse"],
+      },
+      
+
+      {
+        name: "Pinot Wine",
+        description:
+        " Whiskey Glasses, Coasters & more Prestige Decanters  Decanters, ",
+        image: "../assets/images/wine1.jpg",
+        price: "$80",
+        categories: ["wine"],
+      },
+      {
+        name: "NADIA Wine",
+        description:
+        " Alive with notes of tart kiwi and zesty lime blossom ",
+        image: "../assets/images/wine2.jpg",
+        price: "$80",
+        categories: ["wine"],
+      },
+      {
+        name: "Le Mortelle",
+        description:
+        " Whiskey Glasses, Coasters & more Prestige Decanters  Decanters, ",
+        image: "../assets/images/wine3.jpg",
+        price: "$80",
+        categories: ["wine"],
+      },
+      {
+        name: "Rose Wine",
+        description:
+        "The Women Of Sonoma-Cutrer Are Making Kick-Ass Wine ",
+        image: "../assets/images/wine4.jpg",
+        price: "$80",
+        categories: ["wine"],
+      },
+      {
+        name: "Savalan",
+        description:
+        " Whiskey Glasses, Coasters & more Prestige Decanters  Decanters, ",
+        image: "../assets/images/wine5.jpg",
+        price: "$80",
+        categories: ["wine"],
+      },
+      {
+        name: "Anchor ",
+        description:
+          " Drunk, please do not drive",
+        image: "../assets/images/beer1.jpg",
+        price: "$20",
+        categories: ["beer"],
+      },
+      {
+        name: "Tiger",
+        description:
+          " Drunk, please do not drive",
+        image: "../assets/images/beer2.jpg",
+        price: "$20",
+        categories: ["beer"],
       },
     ];
 
