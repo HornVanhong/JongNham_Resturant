@@ -63,13 +63,13 @@ $(document).ready(function () {
     });
   });
 
-  $("#reservationlink").click(function (e) {
-    e.preventDefault();
-    $("#content").load("./components/reservation.html", function () {
-      window.scrollTo(0, 0); // Scroll to the top of the page after loading content
-      // closeMenu(); // Close the menu
-    });
-  });
+  // $("#reservationlink").click(function (e) {
+  //   e.preventDefault();
+  //   $("#content").load("./components/reservation.html", function () {
+  //     window.scrollTo(0, 0); // Scroll to the top of the page after loading content
+  //     // closeMenu(); // Close the menu
+  //   });
+  // });
 
   $("#contactlink").click(function (e) {
     e.preventDefault();

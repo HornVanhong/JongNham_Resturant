@@ -119,6 +119,47 @@
         </div>
       </div>
     </nav>
+    <section>
+      <div class="reservation">
+        <div class="reservation-container">
+          <h1>Restaurant Reservation</h1>
+          <form id="reservation-form">
+            <label class="reservation-label" for="name">Name:</label>
+            <input
+              class="reservation-input"
+              type="text"
+              id="name"
+              placeholder="Enter your name"
+              required
+            />
+
+            <label class="reservation-label" for="date">Date:</label>
+            <input type="date" id="date" required />
+
+            <label class="reservation-label" for="time">Time:</label>
+            <input class="reservation-input" type="time" id="time" required />
+
+            <label class="reservation-label" for="guests"
+              >Number of Guests:</label
+            >
+            <input
+              class="reservation-input"
+              type="number"
+              id="guests"
+              placeholder="Enter number of guests"
+              min="1"
+              required
+            />
+
+            <button class="reservation-btn" type="submit">Reserve Now</button>
+          </form>
+          <div id="confirmation" class="reservation-hidden">
+            <h2>Reservation Confirmed</h2>
+            <p id="confirmation-message"></p>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <div id="content">
       <!-- Page content will be dynamically loaded here -->
@@ -235,6 +276,44 @@
           preloader.style.display = "none";
           content.classList.add("visible");
         }
+      });
+      $(document).ready(function () {
+        // Add event listener to the reservation link
+        $("#reservationlink").on("click", function () {
+          $(".about-section").toggle(); // Hide or show the 'Reserve Now' section
+          $(".reservation-container").toggle(); // Toggle reservation form visibility
+        });
+
+        // Add event listener to the reservation form
+        $("#reservation-form").on("submit", function (e) {
+          e.preventDefault();
+
+          // Retrieve form values
+          const name = $("#name").val();
+          const date = $("#date").val();
+          const time = $("#time").val();
+          const guests = $("#guests").val();
+
+          // Create a confirmation message
+          const confirmationMessage = `Thank you, ${name}! Your reservation for ${guests} guest(s) on ${date} at ${time} has been confirmed.`;
+
+          // Display the confirmation message
+          $("#confirmation-message").text(confirmationMessage);
+
+          // Hide the reservation form and show the confirmation message
+          $("#reservation-form").addClass("reservation-hidden");
+          $("#confirmation").removeClass("reservation-hidden");
+
+          // Set timeout to reset the form and make it ready for the next submission
+          setTimeout(function () {
+            // Reset the form
+            $("#reservation-form")[0].reset(); // Reset the form fields (including time)
+
+            // Hide confirmation message and show the form again
+            $("#reservation-form").removeClass("reservation-hidden");
+            $("#confirmation").addClass("reservation-hidden");
+          }, 1500); // Adjust the timeout as needed (5000ms = 5 seconds)
+        });
       });
     </script>
     <script src="index.js"></script>

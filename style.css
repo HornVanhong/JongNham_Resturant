@@ -9,7 +9,7 @@
 /* ===== Colours ===== */
 :root {
   --body-color: #f4f6fa;
-  --nav-color: #e6e9f1e2;
+  --nav-color: #fff;
   --text-color-shadow: #18191a1f;
   --box-color-shadow: #18191a7a;
   --text-color: #18191a;
@@ -1856,16 +1856,40 @@ animation-play-state: paused;
 /* BLOG */
 
 /* General container styling */
+/* Initially hide the reservation container */
+/* Hide the about-section by default */
+/* Hide the about-section by default */
+.about-section {
+  display: none; /* Hidden by default */
+}
+
+/* Centering reservation container as a pop-up */
 .reservation-container {
-  max-width: 600px;
-  margin: 0 auto;
+  display: none; /* Hidden by default */
+  max-width: 700px; /* Make it 100% wide on smaller screens */
+  width: calc(
+    100% - 40px
+  ); /* Take 100% width minus 20px left and right margins */
+  margin: 0 auto; /* Center it horizontally */
   padding: 20px;
   background-color: var(--nav-color);
   border-radius: 8px;
   box-shadow: 0 4px 10px var(--box-color-shadow);
   font-family: Arial, sans-serif;
   border: 2px solid var(--box-color-shadow);
+
+  /* Make it a fixed pop-up centered on the screen */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* This keeps it centered */
+  z-index: 9999; /* Ensure it appears on top */
 }
+
+.reservation-container.show {
+  display: block; /* Show when toggled */
+}
+
 .reservation-container h1 {
   text-align: center;
   color: var(--text-color);
@@ -1934,6 +1958,58 @@ input[type="time"]:focus {
   color: green;
   font-size: 18px;
   margin-top: 10px;
+}
+
+/* Responsive design adjustments */
+@media (max-width: 768px) {
+  .reservation-container {
+    width: calc(
+      100% - 30px
+    ); /* Adjust width for tablets to have 15px left and right margins */
+    margin: 0 auto; /* Keep it centered */
+    padding: 15px; /* Reduce padding for smaller screens */
+  }
+
+  .reservation-input,
+  input[type="date"],
+  input[type="time"] {
+    padding: 8px; /* Smaller input fields on small screens */
+    font-size: 14px; /* Smaller text */
+  }
+
+  .reservation-btn {
+    padding: 12px; /* Adjust button size */
+    font-size: 14px; /* Smaller text */
+  }
+
+  /* Adjust heading size for smaller screens */
+  .reservation-container h1 {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .reservation-container {
+    width: calc(
+      100% - 20px
+    ); /* Make the reservation container full width with 10px left and right margin on very small screens */
+    margin: 0 auto; /* Center it */
+    padding: 10px; /* Even smaller padding */
+  }
+
+  .reservation-input,
+  input[type="date"],
+  input[type="time"] {
+    font-size: 14px; /* Smaller input text for very small screens */
+  }
+
+  .reservation-btn {
+    font-size: 14px; /* Smaller button text for very small screens */
+  }
+
+  .reservation-container h1 {
+    font-size: 18px; /* Reduce heading size further */
+  }
 }
 
 .contact {
