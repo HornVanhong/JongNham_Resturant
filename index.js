@@ -245,11 +245,16 @@ $(document).ready(function () {
   });
 
   // Handle decrease item quantity
+  // Handle decrease item quantity
   $(document).on("click", ".decrease-quantity", function () {
     const index = $(this).data("index");
 
-    if (cart[index].quantity > 1) {
+    if (cart[index].quantity > 0) {
       cart[index].quantity -= 1; // Decrease quantity by 1
+      if (cart[index].quantity === 0) {
+        // If quantity is 0, remove the item from the cart
+        cart.splice(index, 1);
+      }
       renderCart(); // Re-render the cart
       updateCartCount(); // Update the cart count
     }
