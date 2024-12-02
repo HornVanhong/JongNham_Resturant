@@ -10,6 +10,50 @@ $(document).ready(function () {
       // closeMenu(); // Close the menu
     });
   });
+  // Contact form submission
+  $(document).on("submit", "#contactForm", function (e) {
+    e.preventDefault(); // Prevent the default form submission (which reloads the page)
+
+    // Retrieve form field values and trim any leading/trailing spaces
+    const name = $("#input-name").val().trim();
+    const email = $("#email").val().trim();
+    const message = $("#message").val().trim();
+
+    // // Log the values for debugging
+    // console.log("Name:", name);
+    // console.log("Email:", email);
+    // console.log("Message:", message);
+
+    // Modify the validation as needed
+    if (!name) {
+      // Check if name is missing
+      alert("Please provide your name.");
+      $("#input-name").addClass("error"); // Optionally highlight the name field
+    } else if (!email) {
+      // Check if email is missing
+      alert("Please provide an email address.");
+      $("#email").addClass("error"); // Optionally highlight the email field
+    } else if (!message) {
+      // Check if message is missing
+      alert("Please provide a message.");
+      $("#message").addClass("error"); // Optionally highlight the message field
+    } else {
+      // If all fields are valid, proceed to submit the form data (log it in this case)
+      console.log("Form Submitted!");
+      console.log("Name:", name);
+      console.log("Email:", email);
+      console.log("Message:", message);
+
+      // Optionally, send the data to a server here using an AJAX request
+
+      // Reset the form after successful submission
+      setTimeout(function () {
+        $("#contactForm")[0].reset(); // Reset form after submission
+        $("#input-name, #email, #message").removeClass("error"); // Remove error styling
+        // alert("Thank you for your message! We will get back to you soon.");
+      }, 500);
+    }
+  });
 
   $("#aboutlink").click(function (e) {
     e.preventDefault();
@@ -41,7 +85,7 @@ $(document).ready(function () {
     });
   });
 
-  $("#categorieslink").click(function (e) {
+  $("#gallerylink").click(function (e) {
     e.preventDefault();
     $("#content").load("./components/gallery.html", function () {
       window.scrollTo(0, 0); // Scroll to the top of the page after loading content
