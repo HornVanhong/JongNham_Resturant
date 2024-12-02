@@ -2,12 +2,6 @@ $(document).ready(function () {
   // Load Home page by default
   $("#content").load("./components/home.html");
 
-  // Function to close the menu after clicking a link
-  // function closeMenu() {
-  //   // Close the menu (for mobile devices)
-  //   $("#navbarSupportedContent").collapse("hide");
-  // }
-
   // Navigation link events
   $("#homelink").click(function (e) {
     e.preventDefault();
@@ -63,14 +57,6 @@ $(document).ready(function () {
     });
   });
 
-  // $("#reservationlink").click(function (e) {
-  //   e.preventDefault();
-  //   $("#content").load("./components/reservation.html", function () {
-  //     window.scrollTo(0, 0); // Scroll to the top of the page after loading content
-  //     // closeMenu(); // Close the menu
-  //   });
-  // });
-
   $("#contactlink").click(function (e) {
     e.preventDefault();
     $("#content").load("./components/contact.html", function () {
@@ -96,11 +82,47 @@ $(document).ready(function () {
       // closeMenu(); // Close the menu
     });
   });
-  $(document).on("click", "#home-btn-reservation", function (e) {
-    e.preventDefault();
-    $("#content").load("./components/reservation.html", function () {
-      window.scrollTo(0, 0);
-      // closeMenu(); // Close the menu
+
+  $(document).ready(function () {
+    // Use event delegation for #home-btn-reservation and #reservationlink
+    $(document).on(
+      "click",
+      "#reservationlink, #home-btn-reservation",
+      function () {
+        $(".about-section").toggle(); // Hide or show the 'Reserve Now' section
+        $(".reservation-container").toggle(); // Toggle reservation form visibility
+      }
+    );
+
+    // Add event listener to the reservation form
+    $("#reservation-form").on("submit", function (e) {
+      e.preventDefault();
+
+      // Retrieve form values
+      const name = $("#name").val();
+      const date = $("#date").val();
+      const time = $("#time").val();
+      const guests = $("#guests").val();
+
+      // Create a confirmation message
+      const confirmationMessage = `Thank you, ${name}! Your reservation for ${guests} guest(s) on ${date} at ${time} has been confirmed.`;
+
+      // Display the confirmation message
+      $("#confirmation-message").text(confirmationMessage);
+
+      // Hide the reservation form and show the confirmation message
+      $("#reservation-form").addClass("reservation-hidden");
+      $("#confirmation").removeClass("reservation-hidden");
+
+      // Set timeout to reset the form and make it ready for the next submission
+      setTimeout(function () {
+        // Reset the form
+        $("#reservation-form")[0].reset(); // Reset the form fields (including time)
+
+        // Hide confirmation message and show the form again
+        $("#reservation-form").removeClass("reservation-hidden");
+        $("#confirmation").addClass("reservation-hidden");
+      }, 1500); // Adjust the timeout as needed (1500ms = 1.5 seconds)
     });
   });
 
@@ -133,12 +155,8 @@ $(document).ready(function () {
   }
 
   // Cart functionality
-  const cart = []; // Array to store cart items
-
-  $("#viewCart").on("click", function () {
-    $("#cart-popup").toggle(); // Toggles visibility
-    $("#cart-popup-overlay").toggle(); // Toggles overlay
-  });
+  // Cart array to hold items
+  let cart = [];
 
   // Handle adding items to the cart
   $(document).on("click", ".add-to-cart", function () {
@@ -146,13 +164,27 @@ $(document).ready(function () {
     const itemImage = $(this).data("image");
     const itemPrice = $(this).data("price");
 
-    cart.push({ name: itemName, image: itemImage, price: itemPrice }); // Add item to cart
-    // alert(`${itemName} added to cart!`);
+    // Check if the item already exists in the cart
+    const existingItem = cart.find((item) => item.name === itemName);
+
+    if (existingItem) {
+      // If item exists, increase its quantity
+      existingItem.quantity += 1;
+    } else {
+      // If item doesn't exist, add it to the cart with quantity = 1
+      cart.push({
+        name: itemName,
+        image: itemImage,
+        price: itemPrice,
+        quantity: 1,
+      });
+    }
+
     renderCart(); // Re-render the cart
     updateCartCount(); // Update the cart count
   });
 
-  // Remove item from cart
+  // Handle removing item from the cart
   $(document).on("click", ".remove-item", function () {
     const index = $(this).data("index");
     cart.splice(index, 1); // Remove item from cart
@@ -160,18 +192,31 @@ $(document).ready(function () {
     updateCartCount(); // Update the cart count
   });
 
+  // Handle increase item quantity
+  $(document).on("click", ".increase-quantity", function () {
+    const index = $(this).data("index");
+    cart[index].quantity += 1; // Increase quantity by 1
+    renderCart(); // Re-render the cart
+    updateCartCount(); // Update the cart count
+  });
+
+  // Handle decrease item quantity
+  $(document).on("click", ".decrease-quantity", function () {
+    const index = $(this).data("index");
+
+    if (cart[index].quantity > 1) {
+      cart[index].quantity -= 1; // Decrease quantity by 1
+      renderCart(); // Re-render the cart
+      updateCartCount(); // Update the cart count
+    }
+  });
+
   // Function to update the cart count display
   function updateCartCount() {
-    const cartCount = cart.length; // Get the number of items in the cart
+    const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0); // Get the total number of items in the cart
     $("#viewCart span").text(cartCount); // Update the count in the cart icon
   }
-  function calculateTotal() {
-    const total = cart.reduce((sum, item) => {
-      const price = parseFloat(item.price.replace("$", "")); // Convert price string to number
-      return sum + price;
-    }, 0);
-    $("#total-cost").text(`$${total.toFixed(2)}`); // Update the total cost in the cart
-  }
+
   // Function to render cart items
   function renderCart() {
     const cartItemsList = $("#cart-items");
@@ -182,27 +227,47 @@ $(document).ready(function () {
     } else {
       cart.forEach((item, index) => {
         const cartItemHtml = `
-          <li class="cart-item">
-            <img src="${item.image}" alt="${item.name}" class="image-cart" />
-            <div>${item.name} - ${item.price}</div>
-            <button class="remove-item" data-index="${index}">
-              Remove
-            </button>
-          </li>
-        `;
-        cartItemsList.append(cartItemHtml);
+        <li class="cart-item">
+          <img src="${item.image}" alt="${item.name}" class="image-cart" />
+          <div>${item.name} - ${item.price}</div>
+          <div class="quantity-controls">
+            <button class="decrease-quantity" data-index="${index}">-</button>
+            <span class="quantity">${item.quantity}</span>
+            <button class="increase-quantity" data-index="${index}">+</button>
+          </div>
+          
+        </li>
+      `;
+        cartItemsList.append(cartItemHtml); // Append the item HTML to the cart
       });
     }
-    calculateTotal();
+
+    calculateTotal(); // Calculate the total price
   }
-  // Handle the close button
-  $("#close-cart-popup").on("click", function () {
-    $("#cart-popup").hide(); // Hide the cart popup
-    $("#cart-popup-overlay").hide(); // Hide the overlay
+
+  // Function to calculate the total cost
+  function calculateTotal() {
+    const total = cart.reduce((sum, item) => {
+      const price = parseFloat(item.price.replace("$", "")); // Convert price string to number
+      return sum + price * item.quantity; // Multiply price by quantity
+    }, 0);
+    $("#total-cost").text(`$${total.toFixed(2)}`); // Update the total cost in the cart
+  }
+
+  // Clear the cart
+  $("#clear-cart-btn").click(function () {
+    cart = [];
+    renderCart(); // Re-render the cart after clearing
+    updateCartCount(); // Update the cart count
   });
 
-  // Handle overlay click (optional, to close the popup by clicking outside)
-  $("#cart-popup-overlay").on("click", function () {
+  // Close the cart popup
+  $("#close-cart-popup").click(function () {
+    $("#cart-popup").hide(); // Close the cart popup when the close button is clicked
+  });
+
+  // Handle the close button
+  $("#close-cart-popup").on("click", function () {
     $("#cart-popup").hide(); // Hide the cart popup
     $("#cart-popup-overlay").hide(); // Hide the overlay
   });
@@ -213,9 +278,10 @@ $(document).ready(function () {
     $("#cart-popup-overlay").show(); // Show the overlay
   });
 
+  // Checkout logic with cart validation and loader simulation
   $("#checkout-btn").on("click", function () {
     if (cart.length === 0) {
-      alert("Your cart is empty. Add items to proceed.");
+      // alert("Your cart is empty. Add items to proceed.");
       return;
     }
 
@@ -241,274 +307,73 @@ $(document).ready(function () {
       // Hide the success message after a few seconds
       setTimeout(() => {
         successMessage.addClass("hidden");
-      }, 3000);
+      }, 3000); // Hide the success message after 3 seconds
     }, 2000); // Simulate a 2-second delay for the loader
   });
 
+  // Checkout total calculation
   $("#checkout-btn").on("click", function () {
     if (cart.length === 0) {
-      alert("Your cart is empty. Add items to proceed.");
+      // alert("Your cart is empty. Add items to proceed.");
     } else {
+      // Calculate total price
       const total = cart.reduce((sum, item) => {
         const price = parseFloat(item.price.replace("$", ""));
         return sum + price;
       }, 0);
-      alert(`Your total is $${total.toFixed(2)}. Proceeding to checkout.`);
+      // alert(`Your total is $${total.toFixed(2)}. Proceeding to checkout.`);
       // Redirect to checkout page or handle checkout logic
       // window.location.href = "/checkout.html";
     }
   });
+
+  // Clear cart button logic
   $("#clear-cart-btn").on("click", function () {
     if (cart.length === 0) {
-      alert("Your cart is already empty.");
+      // alert("Your cart is already empty.");
     } else {
       if (confirm("Are you sure you want to clear the cart?")) {
         cart.length = 0; // Clear the cart array
         renderCart(); // Re-render the cart to update UI
         updateCartCount(); // Update cart count
-        alert("Cart cleared!");
+        // alert("Cart cleared!");
       }
     }
   });
 
   // Function to render menu items
   function renderMenu() {
-    const menuData = [
-      {
-        name: "Honey BBQ",
-        description:
-          "baked honey BBQ popcorn chicken is the easiest appetizer ",
-        image: "assets/images/appitizer1.jpg",
-        price: "$4",
-        categories: ["appetizer"],
-      },
-      {
-        name: "Butter Chicken ",
-        description: "Crispy garlic butter chicken wings! Baked in the oven ",
-        image: "assets/images/appitizer3.jpg",
-        price: "$6",
-        categories: ["appetizer"],
-      },
-      {
-        name: "Cheese Bread",
-        description: "Learn How to Cook Cheesy Garlic Bread Recipe For Free ",
-        image: "assets/images/appitizer2.jpg",
-        price: "$5",
-        categories: ["appetizer"],
-      },
-      {
-        name: "Garlic Butter",
-        description: "Pillsbury Biscuit Garlic Butter Cheese Bombs Ingredients",
-        image: "assets/images/appitizer4.jpg",
-        price: "$7",
-        categories: ["appetizer"],
-      },
-      {
-        name: "Shrimp Ceviche",
-        description: " refreshing dip that is loaded with shrimp, lime juice,",
-        image: "assets/images/appitizer5.jpg",
-        price: "$7",
-        categories: ["appetizer"],
-      },
-      {
-        name: "Daiquiri",
-        description:
-          "his classic rum cocktail owes its origins to American mining engineer ",
-        image: "assets/images/drinks1.jpg",
-        price: "$3",
-        categories: ["drink"],
-      },
-      {
-        name: "Dark Stormy",
-        description:
-          "Born in Bermuda, this rum drink was a match between the British Royal ",
-        image: "assets/images/drinks2.jpg",
-        price: "$3",
-        categories: ["drink"],
-      },
+    // Fetch the JSON data
+    $.getJSON("menuData.json", function (menuData) {
+      // Generate the menu initially with all items (this is the default)
+      generateMenu(menuData);
 
-      {
-        name: "Mojito",
-        description: "he original was invented in Havana, Cuba, but you can ",
-        image: "assets/images/drinks3.jpg",
-        price: "$4",
-        categories: ["drink"],
-      },
-      {
-        name: "Planter Punch",
-        description: "Likely originating in Jamaica, this rum drink recipe  ",
-        image: "assets/images/drinks4.png",
-        price: "$3.5",
-        categories: ["drink"],
-      },
-      {
-        name: "Matcha Latte",
-        description: "the start of summer to when the temps dip in the fall.  ",
-        image: "assets/images/drinks5.jfif",
-        price: "$2.5",
-        categories: ["drink"],
-      },
+      // When a filter is clicked, set the active class and filter the menu
+      $(".filter h2").click(function () {
+        $(".filter h2").removeClass("active-filter");
+        $(this).addClass("active-filter");
 
-      {
-        name: "Tiramisu",
-        description: "This decadent chocolate tiramisu features cocoa-coffee",
-        image: "assets/images/dessert.jpg",
-        price: "$40",
-        categories: ["dessert"],
-      },
-      {
-        name: "Cheesecake",
-        description: "creamy delight of Cheesecake Crescent Rolls Casserole",
-        image: "assets/images/dessert2.jpg",
-        price: "$39",
-        categories: ["dessert"],
-      },
-      {
-        name: "Orange Cake",
-        description:
-          "Savor the flavors of Orange Blossom Cheesecake, a perfect",
-        image: "assets/images/dessert3.jpg",
-        price: "$60",
-        categories: ["dessert"],
-      },
-      {
-        name: "Blueberry Cake",
-        description:
-          "Lemon Blueberry Shortbread Mousse Cake: A Symphony of Flavors ",
-        image: "assets/images/dessert4.jpg",
-        price: "$30",
-        categories: ["dessert"],
-      },
-      {
-        name: "Green Matcha",
-        description: "You can save them on your pin boards Green Matcha ",
-        image: "assets/images/dessert5.jpg",
-        price: "$30",
-        categories: ["dessert"],
-      },
+        const selectedCategory = $(this).data("category");
+        const filteredMenu =
+          selectedCategory && selectedCategory !== "all"
+            ? menuData.filter((item) =>
+                item.categories.includes(selectedCategory)
+              )
+            : menuData;
 
-      {
-        name: "Salmon fillets ",
-        description: " skin-side down, and cook for 4-5 minutes on each side",
-        image: "assets/images/mainc1.jpg",
-        price: "$16",
-        categories: ["maincourse"],
-      },
-      {
-        name: "Strip Steak",
-        description: " quality steak right in your own backyard. ",
-        image: "assets/images/mainc2.jpg",
-        price: "$22",
-        categories: ["maincourse"],
-      },
-      {
-        name: " B-Wellington",
-        description:
-          " is the Best and Easiest single-serve Beef Wellington Recipe Ever",
-        image: "assets/images/mainc3.jpg",
-        price: "$299",
-        categories: ["maincourse"],
-      },
-      {
-        name: "Steak Plate",
-        description:
-          " A complete guide including where to place knives, forks, spoons,",
-        image: "assets/images/mainc4.jpg",
-        price: "$88",
-        categories: ["maincourse"],
-      },
-      {
-        name: "Spagetti",
-        description:
-          "Spagetti with tomato sugo, peeled and diced fresh tomatoes and  •",
-        image: "assets/images/mainc5.jpg",
-        price: "$19",
-        categories: ["maincourse"],
-      },
+        generateMenu(filteredMenu); // Re-render the menu based on the filtered data
+      });
 
-      {
-        name: "Pinot Wine",
-        description:
-          " Whiskey Glasses, Coasters & more Prestige Decanters  Decanters, ",
-        image: "assets/images/wine1.jpg",
-        price: "$80",
-        categories: ["wine"],
-      },
-      {
-        name: "NADIA Wine",
-        description: " Alive with notes of tart kiwi and zesty lime blossom ",
-        image: "assets/images/wine2.jpg",
-        price: "$80",
-        categories: ["wine"],
-      },
-      {
-        name: "Le Mortelle",
-        description:
-          " Whiskey Glasses, Coasters & more Prestige Decanters  Decanters, ",
-        image: "assets/images/wine3.jpg",
-        price: "$80",
-        categories: ["wine"],
-      },
-      {
-        name: "Rose Wine",
-        description: "The Women Of Sonoma-Cutrer Are Making Kick-Ass Wine ",
-        image: "assets/images/wine4.jpg",
-        price: "$80",
-        categories: ["wine"],
-      },
-      {
-        name: "Savalan",
-        description:
-          " Whiskey Glasses, Coasters & more Prestige Decanters  Decanters, ",
-        image: "assets/images/wine5.jpg",
-        price: "$80",
-        categories: ["wine"],
-      },
-      {
-        name: "Anchor ",
-        description: " Drunk, please do not drive",
-        image: "assets/images/beer1.jpg",
-        price: "$20",
-        categories: ["beer"],
-      },
-      {
-        name: "Tiger",
-        description: " Drunk, please do not drive",
-        image: "assets/images/beer2.jpg",
-        price: "$20",
-        categories: ["beer"],
-      },
-    ];
-
-    // Generate the menu initially with all items (this is the default)
-    generateMenu(menuData);
-
-    // When a filter is clicked, set the active class and filter the menu
-    $(".filter h2").click(function () {
-      $(".filter h2").removeClass("active-filter");
-      $(this).addClass("active-filter");
-
-      const selectedCategory = $(this).data("category");
-      const filteredMenu =
-        selectedCategory && selectedCategory !== "all"
-          ? menuData.filter((item) =>
-              item.categories.includes(selectedCategory)
-            )
-          : menuData;
-
-      generateMenu(filteredMenu); // Re-render the menu based on the filtered data
-    });
-
-    // Search filter
-    $("#searchInput").on("input", function () {
-      const searchTerm = $(this).val().toLowerCase();
-      const filteredMenu = menuData.filter((item) =>
-        item.name.toLowerCase().includes(searchTerm)
-      );
-      generateMenu(filteredMenu);
+      // Search filter
+      $("#searchInput").on("input", function () {
+        const searchTerm = $(this).val().toLowerCase();
+        const filteredMenu = menuData.filter((item) =>
+          item.name.toLowerCase().includes(searchTerm)
+        );
+        generateMenu(filteredMenu);
+      });
     });
   }
-
   // Function to generate the HTML for the menu items
   function generateMenu(items) {
     $("#menuGrid").empty(); // Clear the menu grid before adding new items
@@ -527,18 +392,3 @@ $(document).ready(function () {
     });
   }
 });
-
-// function startCarousel() {
-//   let myIndex = 0;
-//   function carousel() {
-//     const slides = document.getElementsByClassName("mySlides");
-//     for (let i = 0; i < slides.length; i++) {
-//       slides[i].style.display = "none";
-//     }
-//     myIndex++;
-//     if (myIndex > slides.length) myIndex = 1;
-//     slides[myIndex - 1].style.display = "block";
-//     setTimeout(carousel, 2000);
-//   }
-//   carousel();
-// }

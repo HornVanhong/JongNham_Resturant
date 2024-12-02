@@ -347,29 +347,7 @@ nav .nav-bar .logo i {
 #checkout-success {
   color: #28a745;
 }
-#cart-popup {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -20%);
-  background-color: var(--body-color);
-  border: 1px solid var(--body-color);
-  border-radius: 10px;
-  padding: 20px;
-  z-index: 1000;
-  width: 300px;
-  box-shadow: 0 4px 8px var(--box-color-shadow);
-}
 
-#cart-popup-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: var(--box-color-shadow);
-  z-index: 999;
-}
 .menu-search {
   position: relative;
   width: 100%;
@@ -420,34 +398,118 @@ nav .nav-bar .logo i {
   font-size: 20px;
   font-weight: bold;
   cursor: pointer;
+  color: var(--text-color);
 }
 
 .close-btn:hover {
   color: #ff0000;
+}
+/* Cart Popup */
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Centers the buttons and quantity label */
+}
+
+.quantity-controls button {
+  width: 30px; /* Fixed width for buttons */
+  height: 30px; /* Fixed height for buttons */
+  border-radius: 50%; /* Circular shape */
+  border: 2px solid #333; /* Border color */
+  background-color: #fff; /* White background */
+  font-size: 18px; /* Font size for the text inside */
+  text-align: center; /* Centers the text inside */
+  display: flex;
+  justify-content: center; /* Centers content horizontally */
+  align-items: center; /* Centers content vertically */
+  cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s; /* Smooth transition on hover */
+}
+
+.quantity-controls .decrease-quantity {
+  background-color: red; /* Red background for decrease button */
+  color: white; /* White color for the minus sign */
+}
+
+.quantity-controls .increase-quantity {
+  background-color: rgb(76, 76, 255); /* Blue background for increase button */
+  color: white; /* White color for the plus sign */
+}
+
+.quantity-controls button:hover {
+  color: white; /* White color for text on hover */
+}
+
+.quantity-controls .decrease-quantity:hover {
+  background-color: darkred; /* Dark red for hover on decrease button */
+}
+
+.quantity-controls .increase-quantity:hover {
+  background-color: darkblue; /* Dark blue for hover on increase button */
+}
+
+.quantity-controls .quantity {
+  margin: 0 10px;
+  font-size: 18px;
+  font-weight: bold;
+  width: 30px; /* Fixed width for the quantity text */
+  text-align: center; /* Centers the quantity text */
 }
 
 #cart-popup {
   border: 1px solid var(--text-color);
   border-radius: 10px;
   padding: 20px;
-  width: 400px; /* Increased width */
+  width: 400px; /* Default width for larger screens */
   position: fixed;
-  top: 190px;
-  right: -420px; /* Adjusted for new width */
+  top: 0; /* Start at the top of the screen */
+  right: -420px; /* Off-screen initially, adjusted for new width */
   background: var(--body-color);
   box-shadow: 0 60px 70px var(--box-color-shadow);
-  display: none;
+  display: none; /* Hidden by default */
   z-index: 99000; /* Ensure it appears above other content */
-  max-height: 80vh; /* Prevent overflowing on small screens */
+  height: 100vh; /* Full height */
   overflow-y: auto; /* Scrollable content if too many items */
-  animation: slideIn 0.5s forwards; /* Add animation */
+  animation: slideIn 0.7s forwards; /* Add animation */
 }
+
+/* Animation for sliding from right to left */
 @keyframes slideIn {
-  from {
-    right: -420px; /* Adjusted for new width */
+  0% {
+    right: -420px; /* Start from the right outside the screen */
   }
-  to {
-    right: 20px; /* End position */
+  100% {
+    right: 0; /* End at the right edge of the screen */
+  }
+}
+
+/* Cart Overlay */
+#cart-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  z-index: 98999; /* Slightly lower than the cart popup */
+  display: none; /* Hidden by default */
+}
+
+/* Responsive Design for Smaller Screens */
+@media (max-width: 768px) {
+  /* For tablets and mobile */
+  #cart-popup {
+    width: 300px; /* Narrower width for mobile devices */
+    right: -320px; /* Adjust right position for smaller width */
+  }
+}
+
+@media (max-width: 480px) {
+  /* For very small screens (e.g., phones) */
+  #cart-popup {
+    width: 250px; /* Even narrower for small screens */
+    right: -270px; /* Adjust right position further */
+    padding: 10px; /* Adjust padding to fit the smaller screen */
   }
 }
 
@@ -626,6 +688,9 @@ nav .nav-bar .logo i {
 /* Title and price */
 
 #total-cost {
+  color: var(--text-color);
+}
+#title-total {
   color: var(--text-color);
 }
 /* Hover effect for the button */
@@ -2304,13 +2369,7 @@ footer {
   }
   /* //MENU CARD// */
   /* CART */
-  #cart-popup {
-    padding: 10px;
-    width: 310px;
-    position: fixed;
-    top: 190px;
-    right: -420px;
-  }
+
   .cart-actions button {
     font-size: 12px;
     padding: 5px 15px;

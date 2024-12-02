@@ -70,7 +70,7 @@
               <li><a href="#" id="menulink">Menu</a></li>
               <li><a href="#" id="aboutlink">About</a></li>
               <li><a href="#" id="teamlink">Team</a></li>
-              <li><a href="#" id="categorieslink">Gallery</a></li>
+              <li><a href="#" id="gallerylink">Gallery</a></li>
               <li><a href="#" id="bloglink">Blog</a></li>
               <li><a href="#" id="contactlink">Contact</a></li>
             </ul>
@@ -169,10 +169,9 @@
       <h3>Shopping Cart</h3>
       <ul id="cart-items">
         <!-- Items will be dynamically added here -->
-        <img src="" alt="" />
       </ul>
       <div id="cart-total">
-        <strong>Total: </strong><span id="total-cost">$0</span>
+        <strong id="title-total">Total: </strong><span id="total-cost">$0</span>
       </div>
       <div class="cart-actions">
         <button id="checkout-btn">Checkout</button>
@@ -181,6 +180,7 @@
       <div id="checkout-loader" class="hidden">Processing...</div>
       <div id="checkout-success" class="hidden">Checkout successful!</div>
     </div>
+
     <footer id="footer-container">
       <!-- Footer content can be dynamically loaded here if needed -->
     </footer>
@@ -276,44 +276,6 @@
           preloader.style.display = "none";
           content.classList.add("visible");
         }
-      });
-      $(document).ready(function () {
-        // Add event listener to the reservation link
-        $("#reservationlink").on("click", function () {
-          $(".about-section").toggle(); // Hide or show the 'Reserve Now' section
-          $(".reservation-container").toggle(); // Toggle reservation form visibility
-        });
-
-        // Add event listener to the reservation form
-        $("#reservation-form").on("submit", function (e) {
-          e.preventDefault();
-
-          // Retrieve form values
-          const name = $("#name").val();
-          const date = $("#date").val();
-          const time = $("#time").val();
-          const guests = $("#guests").val();
-
-          // Create a confirmation message
-          const confirmationMessage = `Thank you, ${name}! Your reservation for ${guests} guest(s) on ${date} at ${time} has been confirmed.`;
-
-          // Display the confirmation message
-          $("#confirmation-message").text(confirmationMessage);
-
-          // Hide the reservation form and show the confirmation message
-          $("#reservation-form").addClass("reservation-hidden");
-          $("#confirmation").removeClass("reservation-hidden");
-
-          // Set timeout to reset the form and make it ready for the next submission
-          setTimeout(function () {
-            // Reset the form
-            $("#reservation-form")[0].reset(); // Reset the form fields (including time)
-
-            // Hide confirmation message and show the form again
-            $("#reservation-form").removeClass("reservation-hidden");
-            $("#confirmation").addClass("reservation-hidden");
-          }, 1500); // Adjust the timeout as needed (5000ms = 5 seconds)
-        });
       });
     </script>
     <script src="index.js"></script>
